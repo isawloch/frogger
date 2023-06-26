@@ -1,0 +1,131 @@
+
+
+body {
+    background-color: green;
+    font-family: 'Changa', serif;
+    font-size: 20px;
+    color: white;
+    text-align: center;
+}
+
+.smallerText {
+    font-size: 15px;
+    margin: 15px;
+}
+#startGame {
+    background-color: green;
+    width: 100px;
+    height: 50px;
+    position: absolute;
+    left: 50px;
+    top: 200px;
+    text-align: center;
+    color: white;
+    font-family: 'Changa', serif;
+    font-size: 15px;
+    border: solid 5px green;
+    border-radius: 25px;
+}
+
+.car1 {
+    width: 100px;
+    height: 60px;
+    position: absolute;
+    top: 100px;
+    left: 10px;
+    z-index: 11;
+}
+
+.car2 {
+    width: 100px;
+    height: 60px;
+    position: absolute;
+    top: 220px;
+    left: 10px;
+    z-index: 11;
+}
+
+.car3 {
+    width: 100px;
+    height: 60px;
+    position: absolute;
+    top: 340px;
+    left: 10px;
+    z-index: 11;
+}
+
+#frog {
+    position: absolute;
+    top: 430px;
+    left: 450px;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    z-index: 10;
+}
+
+.header1 {
+    margin: 30px;
+    text-align: center;
+    position: absolute;
+    left: 600px;
+}
+
+.header2 {
+    margin: 30px;
+    text-align: center;
+}
+
+#road {
+    width: 950px;
+    height: 380px;
+    position: absolute;
+    top: 50px;
+    background-color: #2d2e2d;
+}
+
+.lane-marker {
+    width: 950px;
+    height: 4px;
+    background-color: white;
+}
+
+.yellow-markers {
+    width: 20px;
+    height: 7px;
+    background-color: #f2e707;
+    position: absolute;
+    top: 45px;
+    left: 10px;
+    margin: 10px;
+}
+
+#scoreboard {
+    background-color: lightgreen;
+    position: absolute;
+    top: 20%;
+    text-align: left;
+    width: 200px;
+    height: 300px;
+    border-radius: 25px;
+}
+
+#game-screen {
+    position: absolute;
+    background-color: lightgreen;
+    left: 20%;
+    top: 20%;
+    width: 950px;
+    height: 500px;
+    border-radius: 25px;
+}
+
+.coin {
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+}
