@@ -21,7 +21,8 @@ window.addEventListener('keydown', checkKey);
 console.log("event listener set");
 
 //car variables 
-let maxSpeed = 100; //px
+let maxSpeed = 10; //px
+let minSpeed = 10;
 let currSpeed1;
 let currSpeed2;
 let currSpeed3;
@@ -35,35 +36,87 @@ let uniqueID1;
 let uniqueID2;
 let uniqueID3;
 let ctr = 0;
+let separateID1;
+let separateSpeed1;
+let separateID2;
+let separateSpeed2;
+let separateID3;
+let separateSpeed3;
+let carPosX;
+let carPosY;
 
-function startCarsLane1(){
+function updatePos(carID, curPos, speed){
+    setInterval(function() {
+        if(curPos >= (roadBorderRight - 25)){
+            document.getElementById(carID).remove();
+        }
+        else {
+            curPos += speed;
+            document.getElementById(carID).style.left = curPos+'px';
+        }
+    }, 50);
+    
+}
+
+function makeCars1(){
     ctr++;
-    currSpeed1 = Math.random() * maxSpeed;
-    x1 += currSpeed1;
     uniqueID1 = 'car'+ctr;
     newCar1 = "<img src='img/car.png' class='car1' id=" + uniqueID1 + "></img>";
     document.getElementById("game-screen").innerHTML += newCar1;
+    document.getElementById(uniqueID1).style.position='absolute';
+    document.getElementById(uniqueID1).style.left='0px';
 
+    console.log(document.getElementById(uniqueID1));
+
+    currSpeed1 = (Math.random() * maxSpeed) + minSpeed;
+    // console.log(newCar1);
+    startCarsLane1(uniqueID1, currSpeed1);
 }
 
-function startCarsLane2(){
+function startCarsLane1(car, currSpeed){
+    updatePos(car, x1, currSpeed);
+}
+
+function makeCars2(){
     ctr++;
-    currSpeed2 = Math.random() * maxSpeed;
-    x2 += currSpeed2;
     uniqueID2 = 'car'+ctr;
     newCar2 = "<img src='img/car.png' class='car2' id=" + uniqueID2 + "></img>";
     document.getElementById("game-screen").innerHTML += newCar2;
+    document.getElementById(uniqueID2).style.position='absolute';
+    document.getElementById(uniqueID2).style.left='0px';
 
+    console.log(document.getElementById(uniqueID2));
+
+    currSpeed2 = (Math.random() * maxSpeed) + minSpeed;
+
+    // console.log(newCar2);
+    startCarsLane2(uniqueID2, currSpeed2);
 }
 
-function startCarsLane3(){
+function startCarsLane2(car, currSpeed){
+    updatePos(car, x2, currSpeed);
+}
+
+function makeCars3(){
     ctr++;
-    currSpeed3 = Math.random() * maxSpeed;
-    x3 += currSpeed3;
     uniqueID3 = 'car'+ctr;
     newCar3 = "<img src='img/car.png' class='car3' id=" + uniqueID3 + "></img>";
     document.getElementById("game-screen").innerHTML += newCar3;
+    document.getElementById(uniqueID3).style.position='absolute';
+    document.getElementById(uniqueID3).style.left= '0px';
+
+    console.log(document.getElementById(uniqueID3));
+
+    currSpeed3 = (Math.random() * maxSpeed) + minSpeed;
+
+    // console.log(newCar3);
+    startCarsLane3(uniqueID3, currSpeed3);
 }
+
+function startCarsLane3(car, currSpeed){
+    updatePos(car, x3, currSpeed);
+}
+
 
 
 document.onreadystatechange = () => {
@@ -124,9 +177,9 @@ function startGame(e) {
     e.preventDefault();
     //pseudo-randomly throw items
     setTimeout(throwCoins, 2000);
-    setTimeout(startCarsLane1, 2000);
-    setTimeout(startCarsLane2, 2000);
-    setTimeout(startCarsLane3, 2000);
+    setInterval(makeCars1, 2000);
+    setInterval(makeCars2, 2500);
+    setInterval(makeCars3, 2200);
     //incrementing score
 }
 
@@ -224,11 +277,48 @@ function checkCollision() {
         currentFrogPosY = Number(currentFrogPosY.substring(0,1));
     }
     
-    // console.log(document.getElementById("frog").style.left);
-    
-    // console.log("frog pos:", currentFrogPosX, currentFrogPosY);
+    cars1 = document.querySelectorAll(".car1");
+    cars2 = document.querySelectorAll(".car2");
+    cars3 = document.querySelectorAll(".car3");
 
-    // console.log(document.getElementById("frog").style.top);
+    cars1.forEach((currCar) => {
+
+        carPosY = 100;
+    
+        if(Math.abs(currentFrogPosX - getCurrentXPos(currCar)) <= 25 ){
+            if((Math.abs(currentFrogPosY - carPosY) <= 25)){
+                console.log("collision!");
+                gameOver();
+            }
+            
+        }
+    })
+
+    cars2.forEach((currCar) => {
+
+        carPosY = 220;
+    
+        if(Math.abs(currentFrogPosX - getCurrentXPos(currCar)) <= 25 ){
+            if((Math.abs(currentFrogPosY - carPosY) <= 25)){
+                console.log("collision!");
+                gameOver();
+            }
+            
+        }
+    })
+
+    cars3.forEach((currCar) => {
+
+        carPosY = 340;
+    
+        if(Math.abs(currentFrogPosX - getCurrentXPos(currCar)) <= 25 ){
+            if((Math.abs(currentFrogPosY - carPosY) <= 25)){
+                console.log("collision!");
+                gameOver();
+            }
+            
+        }
+    })
 
     coins = document.querySelectorAll(".coin");
 
@@ -279,4 +369,23 @@ function checkCollision() {
 
 function updateScore() {
     document.getElementById("scoreNum").innerHTML = score;
+}
+
+function gameOver() {
+    alert("Game over! Refresh to try again :)")
+}
+
+function getCurrentXPos(car){
+    carPosX = car.style.left;
+        if(carPosX.length == 5){
+            carPosX = Number(carPosX.substring(0,3));
+        }
+        else if(carPosX.length == 4) {
+            carPosX = Number(carPosX.substring(0,2));
+        }
+
+        else {
+            carPosX = Number(carPosX.substring(0,1));
+        }
+    return carPosX;
 }
