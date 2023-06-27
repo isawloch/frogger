@@ -44,15 +44,63 @@ let separateID3;
 let separateSpeed3;
 let carPosX;
 let carPosY;
+let carPosLat;
+let carPosLong;
 
-function updatePos(carID, curPos, speed){
+let frogPosLat;
+let frogPosLong;
+let frog;
+
+function getFrogPosX(frog){
+    // console.log(frog);
+    if(frog.style.left.length == 5){
+        frogPosLat = frog.style.left.substring(0, 3);
+    }
+    else if(frog.style.left.length == 4){
+        frogPosLat = frog.style.left.substring(0, 2);
+    }
+    else {
+        frogPosLat = frog.style.left.substring(0, 1);
+    }
+
+    return Number(frogPosLat);
+}
+
+function getFrogPosY(frog){ 
+
+    if(frog.style.top.length == 5){
+        frogPosLong = frog.style.top.substring(0, 3);
+    }
+    else if(frog.style.top.length == 4){
+        frogPosLong = frog.style.top.substring(0, 2);
+    }
+    else {
+        frogPosLong = frog.style.top.substring(0, 1);
+    }
+
+    return Number(frogPosLong);
+}
+
+function updatePos(carID, curPos, speed, classLane){
+    frog = document.getElementById("frog");
     setInterval(function() {
-        if(curPos >= (roadBorderRight - 25)){
-            document.getElementById(carID).remove();
-        }
-        else {
-            curPos += speed;
-            document.getElementById(carID).style.left = curPos+'px';
+        if(document.getElementById(carID)){
+            if(curPos >= (roadBorderRight - 25)){ 
+                document.getElementById(carID).remove();
+            }
+            else {
+                curPos += speed;
+                document.getElementById(carID).style.left = Math.ceil(curPos)+'px';
+                // console.log("current car position", Math.ceil(curPos), classLane);
+                // console.log("current frog pos", currentFrogPosX, currentFrogPosY);
+                console.log("frog pos", getFrogPosX(frog), getFrogPosY(frog));
+                if(Math.abs(getFrogPosX(frog) - Math.ceil(curPos)) <= 10){
+                    if(Math.abs(getFrogPosY(frog) - classLane) <= 10){
+                        console.log("THERE HAS BEEN A FROGGY CAR CRASH!!!!!!!!!!!!!!!!!!!!")
+                        gameOver();
+                    }
+                }
+            }
         }
     }, 50);
     
@@ -66,7 +114,7 @@ function makeCars1(){
     document.getElementById(uniqueID1).style.position='absolute';
     document.getElementById(uniqueID1).style.left='0px';
 
-    console.log(document.getElementById(uniqueID1));
+    // console.log(document.getElementById(uniqueID1));
 
     currSpeed1 = (Math.random() * maxSpeed) + minSpeed;
     // console.log(newCar1);
@@ -74,7 +122,9 @@ function makeCars1(){
 }
 
 function startCarsLane1(car, currSpeed){
-    updatePos(car, x1, currSpeed);
+    if(document.getElementById(car)){
+        updatePos(car, x1, currSpeed, 100);
+    }
 }
 
 function makeCars2(){
@@ -85,7 +135,7 @@ function makeCars2(){
     document.getElementById(uniqueID2).style.position='absolute';
     document.getElementById(uniqueID2).style.left='0px';
 
-    console.log(document.getElementById(uniqueID2));
+    // console.log(document.getElementById(uniqueID2));
 
     currSpeed2 = (Math.random() * maxSpeed) + minSpeed;
 
@@ -94,7 +144,9 @@ function makeCars2(){
 }
 
 function startCarsLane2(car, currSpeed){
-    updatePos(car, x2, currSpeed);
+    if(car){
+        updatePos(car, x2, currSpeed, 220);
+    }
 }
 
 function makeCars3(){
@@ -105,7 +157,7 @@ function makeCars3(){
     document.getElementById(uniqueID3).style.position='absolute';
     document.getElementById(uniqueID3).style.left= '0px';
 
-    console.log(document.getElementById(uniqueID3));
+    // console.log(document.getElementById(uniqueID3));
 
     currSpeed3 = (Math.random() * maxSpeed) + minSpeed;
 
@@ -114,7 +166,9 @@ function makeCars3(){
 }
 
 function startCarsLane3(car, currSpeed){
-    updatePos(car, x3, currSpeed);
+    if(car){
+        updatePos(car, x3, currSpeed, 340);
+    }
 }
 
 
@@ -125,7 +179,7 @@ document.onreadystatechange = () => {
         for(var j = 0; j < 3; ++j){
             let pos = 0;
             for(var i = 0; i < 15; ++i){
-                console.log("loop started");
+                // console.log("loop started");
                 uniqueId = 'block'+j+i;
                 let yellowBlock = "<div class='yellow-markers' id=" + uniqueId + "></div>";
                 document.getElementById("road").innerHTML += yellowBlock;
@@ -145,7 +199,8 @@ document.onreadystatechange = () => {
             
             lanePos += 127;
             yellowLanePos += 125;
-
+            currentFrogPosX = 450;
+            currentFrogPosY = 430;
         }
 
         document.getElementById("startGame").addEventListener('click', startGame);
@@ -166,7 +221,7 @@ function throwCoins(){
         document.getElementById(coinId).style.position="absolute";
         coinX =  Math.ceil(Math.random() * roadBorderRight);
         coinY = Math.ceil(Math.random() * roadBorderBottom);
-        console.log("coin pos:", coinX, coinY);
+        // console.log("coin pos:", coinX, coinY);
         document.getElementById(coinId).style.left=coinX+"px";
         document.getElementById(coinId).style.top=coinY+"px";
     }
@@ -175,6 +230,9 @@ function throwCoins(){
 function startGame(e) {
     console.log("game started!");
     e.preventDefault();
+    frog = document.getElementById("frog");
+    currentFrogPosX = 450;
+    currentFrogPosY = 430;
     //pseudo-randomly throw items
     setTimeout(throwCoins, 2000);
     setInterval(makeCars1, 2000);
@@ -202,123 +260,75 @@ function checkKey(e) {
 }
 
 function moveFroggyLeft(){
+    frog = document.getElementById("frog");
     console.log("left called");
     if(xpos - 10 >= roadBorderLeft ){
         xpos -= 10;
-        document.getElementById("frog").style.left=xpos+"px";
+        document.getElementById("frog").style.left=Math.ceil(xpos)+"px";
     }
     checkCollision();
+    frog = document.getElementById("frog")
+    currentFrogPosX = getFrogPosX(frog);
+    currentFrogPosY = getFrogPosY(frog);
     return;
 }
 
 function moveFroggyRight(){
+    frog = document.getElementById("frog");
     console.log("right called");
     if(xpos - 10 <= roadBorderRight ){
         xpos += 10;
-        document.getElementById("frog").style.left=xpos+"px";
+        document.getElementById("frog").style.left=Math.ceil(xpos)+"px";
     }
     checkCollision();
+    frog = document.getElementById("frog")
+    currentFrogPosX = getFrogPosX(frog);
+    currentFrogPosY = getFrogPosY(frog);
     return;
 }
 
 function moveFroggyUp(){
+    frog = document.getElementById("frog");
     console.log("up called");
     if(ypos - 10 >= roadBorderTop ){
         ypos -= 10;
-        document.getElementById("frog").style.top=ypos+"px";
+        document.getElementById("frog").style.top=Math.ceil(ypos)+"px";
     }
     checkCollision();
+    frog = document.getElementById("frog")
+    currentFrogPosX = getFrogPosX(frog);
+    currentFrogPosY = getFrogPosY(frog);
     return;
 }
 
 function moveFroggyDown(){
+    frog = document.getElementById("frog");
     console.log("down called");
     if(ypos + 10 <= roadBorderBottom ){
         ypos += 10;
-        document.getElementById("frog").style.top=ypos+"px";
+        document.getElementById("frog").style.top=Math.ceil(ypos)+"px";
     }
     checkCollision();
+    frog = document.getElementById("frog")
+    currentFrogPosX = getFrogPosX(frog);
+    currentFrogPosY = getFrogPosY(frog);
     return;
 }
 
 let currCoinID;
-let currentFrogPosX;
-let currentFrogPosY;
+let currentFrogPosX = 450;
+let currentFrogPosY = 430;
 let coinPosX;
 let coinPosY;
 let coins;
 
 
+   
 function checkCollision() {
     console.log("checkCollision called");
-    currentFrogPosX = document.getElementById("frog").style.left; 
-    if(currentFrogPosX.length == 5){
-        currentFrogPosX = Number(currentFrogPosX.substring(0,3));
-        console.log(currentFrogPosX);
-    }
-    else if(currentFrogPosX.length == 4) {
-        currentFrogPosX = Number(currentFrogPosX.substring(0,2));
-    }
-
-    else {
-        currentFrogPosX = Number(currentFrogPosX.substring(0,1));
-    }
-    currentFrogPosY = document.getElementById("frog").style.top; 
-
-    if(currentFrogPosY.length == 5){
-        currentFrogPosY = Number(currentFrogPosY.substring(0,3));
-    }
-    
-    else if(currentFrogPosY.length == 4){
-        currentFrogPosY = Number(currentFrogPosY.substring(0,2));
-    }
-
-    else {
-        currentFrogPosY = Number(currentFrogPosY.substring(0,1));
-    }
-    
-    cars1 = document.querySelectorAll(".car1");
-    cars2 = document.querySelectorAll(".car2");
-    cars3 = document.querySelectorAll(".car3");
-
-    cars1.forEach((currCar) => {
-
-        carPosY = 100;
-    
-        if(Math.abs(currentFrogPosX - getCurrentXPos(currCar)) <= 25 ){
-            if((Math.abs(currentFrogPosY - carPosY) <= 25)){
-                console.log("collision!");
-                gameOver();
-            }
-            
-        }
-    })
-
-    cars2.forEach((currCar) => {
-
-        carPosY = 220;
-    
-        if(Math.abs(currentFrogPosX - getCurrentXPos(currCar)) <= 25 ){
-            if((Math.abs(currentFrogPosY - carPosY) <= 25)){
-                console.log("collision!");
-                gameOver();
-            }
-            
-        }
-    })
-
-    cars3.forEach((currCar) => {
-
-        carPosY = 340;
-    
-        if(Math.abs(currentFrogPosX - getCurrentXPos(currCar)) <= 25 ){
-            if((Math.abs(currentFrogPosY - carPosY) <= 25)){
-                console.log("collision!");
-                gameOver();
-            }
-            
-        }
-    })
+    frog = document.getElementById("frog")
+    currentFrogPosX = getFrogPosX(frog);
+    currentFrogPosY = getFrogPosY(frog);
 
     coins = document.querySelectorAll(".coin");
 
@@ -350,8 +360,8 @@ function checkCollision() {
             coinPosY = Number(coinPosY.substring(0,1));
         }
         
-        console.log("frog position: ", currentFrogPosX, currentFrogPosY);
-        console.log(currCoin);
+        // console.log("frog position: ", currentFrogPosX, currentFrogPosY);
+        // console.log(currCoin);
         if(Math.abs(currentFrogPosX - coinPosX) <= 25 ){
             if((Math.abs(currentFrogPosY - coinPosY) <= 25)){
                 score++;
@@ -375,17 +385,3 @@ function gameOver() {
     alert("Game over! Refresh to try again :)")
 }
 
-function getCurrentXPos(car){
-    carPosX = car.style.left;
-        if(carPosX.length == 5){
-            carPosX = Number(carPosX.substring(0,3));
-        }
-        else if(carPosX.length == 4) {
-            carPosX = Number(carPosX.substring(0,2));
-        }
-
-        else {
-            carPosX = Number(carPosX.substring(0,1));
-        }
-    return carPosX;
-}
