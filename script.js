@@ -57,7 +57,7 @@ let start;
 
 function checkFinish(){
     if(ypos <= 10) {
-        finalscore = ((Date.now() - start - 2000)/1000) - (score/2);
+        finalscore = ((Date.now() - start - 2000)/1000) - (score * 1.5);
         alert("Success! Your total score was: " + finalscore);
     }
 }
