@@ -48,13 +48,19 @@ let carPosX;
 let carPosY;
 let carPosLat;
 let carPosLong;
+let finalscore;
 
 
 let frog;
 
 let start;
 
-
+function checkFinish(){
+    if(ypos <= 10) {
+        finalscore = ((Date.now() - start - 2000)/1000) - (score/2);
+        alert("Success! Your total score was: " + finalscore);
+    }
+}
 
 function updatePos(carID, curPos, speed, classLane){
     frog = document.getElementById("frog");
@@ -205,7 +211,7 @@ function startGame(e) {
     start = Date.now();
     e.preventDefault();
     frog = document.getElementById("frog");
-    xpos = 450;
+    xpos = 420;
     ypos = 430;
     //pseudo-randomly throw items
     setTimeout(throwCoins, 2000);
@@ -247,6 +253,7 @@ function moveFroggyLeft(){
         document.getElementById("frog").style.left=Math.ceil(xpos)+"px";
     }
     checkCollision();
+    checkFinish();
     return;
 }
 
@@ -258,6 +265,7 @@ function moveFroggyRight(){
         document.getElementById("frog").style.left=Math.ceil(xpos)+"px";
     }
     checkCollision();
+    checkFinish();
     return;
 }
 
@@ -269,6 +277,7 @@ function moveFroggyUp(){
         document.getElementById("frog").style.top=Math.ceil(ypos)+"px";
     }
     checkCollision();
+    checkFinish();
     return;
 }
 
@@ -280,6 +289,7 @@ function moveFroggyDown(){
         document.getElementById("frog").style.top=Math.ceil(ypos)+"px";
     }
     checkCollision();
+    checkFinish();
     return;
 }
 
